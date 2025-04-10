@@ -109,5 +109,3 @@ Managing infrastructure directly from Kubernetes reduced the complexity of maint
 
 ### **Conclusion**
 By leveraging Crossplane, **CloudStream Inc.** successfully simplified their infrastructure management, improved their cloud-native workflows, and adopted a more **declarative, GitOps-driven approach** to managing their multi-cloud resources. Crossplane’s continuous reconciliation, Kubernetes-native IaC capabilities, and seamless integration with CI/CD pipelines transformed CloudStream’s operational efficiency, reducing manual intervention and accelerating their deployment cycles.
-
-This case study illustrates how **Crossplane** can be a powerful tool for organizations looking to unify their **Kubernetes-based** infrastructure management while ensuring **continuous reconciliation** and supporting **multi-cloud architectures**.
