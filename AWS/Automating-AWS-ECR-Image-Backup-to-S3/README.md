@@ -1,10 +1,16 @@
 # **Case Study: Automating AWS ECR Image Backup to S3**
 
-<div style="display: flex; justify-content: center; gap: 40px; align-items: center;">
-  <img src="https://icon.icepanel.io/AWS/svg/Containers/Elastic-Container-Registry.svg" alt="ECR" width="200"/>
-  <img src="https://www.svgrepo.com/show/2087/plus.svg" alt="PLUSE" width="30"/>
-  <img src="https://cdn.worldvectorlogo.com/logos/amazon-s3-simple-storage-service.svg" alt="S3" width="200"/>
-</div>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://icon.icepanel.io/AWS/svg/Containers/Elastic-Container-Registry.svg" alt="ECR" width="200"/>
+    </td>
+    <td align="center" style="font-size: 40px;">+</td>
+    <td align="center">
+      <img src="https://cdn.worldvectorlogo.com/logos/amazon-s3-simple-storage-service.svg" alt="S3" width="200"/>
+    </td>
+  </tr>
+</table>
 
 
 ## **Overview**
