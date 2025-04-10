@@ -1,0 +1,118 @@
+@Library("Pipelines") _
+pipeline {
+    agent { label 'spot-agents' }
+    options { timestamps() }
+    environment {
+        AWS_REGION = '<AWS_REGION>'
+        SNS_TOPIC_ARN = 'arn:aws:sns:<AWS_REGION>:<ACCOUNT_ID>:jenkins-build-notifications'
+    }
+    stages {
+        stage('Send SNS Notification (Pre-build)') {
+            steps {
+                script {
+                    snsNotify(
+                        status: "STARTED",
+                        topicArn: "${SNS_TOPIC_ARN}",
+                    )
+                }
+            }
+        }
+        stage('Main stage started') {
+            steps {
+                script {
+                    def gitCommitShort = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+
+                    def requiredFiles = ['Dockerfile']
+                    def missingFiles = requiredFiles.findAll { !fileExists(it) }
+
+                    if (missingFiles) {
+                        error("Build failed! Missing files: ${missingFiles.join(', ')}")
+                    } else {
+                        echo "All required files are present. Proceeding with the build..."
+                    }
+
+                    def branch = env.BRANCH_NAME
+                    def tag = gitCommitShort
+                    def image = ""
+                    def secondary_image = ""
+                    def service_name = ""
+                    def task_def = ""
+                    def cluster_name = ""
+                    def ecs_service = ""
+                    def s3_bucket_name = ""
+
+                    if (branch == "main") {
+                        image = "<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/frontend-prod"
+                        secondary_image = ""
+                        service_name = "frontend-prod"
+                        task_def = "Frontend-prod"
+                        cluster_name = "prod"
+                        ecs_service = "Frontend-PROD"
+                        s3_bucket_name = "<AWS_BUCKET_NAME>"
+                    } else if (branch == "dev") {
+                        image = "<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/frontend-dev"
+                        secondary_image = ""
+                        service_name = "frontend-dev"
+                        task_def = "Frontend-dev"
+                        cluster_name = "dev"
+                        ecs_service = "Frontend-DEV"
+                        s3_bucket_name = "<AWS_BUCKET_NAME>"
+                    }
+                    // Store values as environment variables
+                    env.SERVICE_NAME = service_name
+                    env.FINAL_BUILD_NAME = "#${env.BUILD_NUMBER}-${tag}"
+
+                    if (!s3_bucket_name?.trim()) {
+                        error("S3 bucket name is not defined or is empty!")
+                    }
+
+                    if (service_name == "frontend-dev") {
+                        echo "Copying Dev environment file from S3 bucket: ${s3_bucket_name}"
+                        if (sh(script: """aws s3 cp "s3://${s3_bucket_name}/frontend-dev.env" "$WORKSPACE/.env" """, returnStatus: true) != 0) {
+                            error("Failed to copy Dev environment file from S3 bucket")
+                        }
+                    } else if (service_name == "frontend-prod") {
+                        echo "Copying Prod environment file from S3 bucket: ${s3_bucket_name}"
+                        if (sh(script: """aws s3 cp "s3://${s3_bucket_name}/frontend-prod.env" "$WORKSPACE/.env" """, returnStatus: true) != 0) {
+                            error("Failed to copy Prod environment file from S3 bucket")
+                        }
+                    } else {
+                        error("Invalid service name: ${service_name}")
+                    }
+                    commonLibrary {
+                        TAG              = tag
+                        IMAGE            = image
+                        SECONDARY_IMAGE  = secondary_image
+                        SERVICE_NAME     = service_name
+                        TASK_DEFINITION  = task_def
+                        CLUSTER_NAME     = cluster_name
+                        ECS_SERVICE      = ecs_service
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                echo "Build succeeded, sending SNS notification..."
+                snsNotify(
+                    status: "SUCCESS",
+                    topicArn: "${SNS_TOPIC_ARN}",
+                    service_name: "${env.SERVICE_NAME}",
+                    final_build_name: "${env.FINAL_BUILD_NAME}"
+                )
+            }
+        }
+        failure {
+            script {
+                echo "Build failed, sending SNS notification..."
+                snsNotify(
+                    status: "FAILURE",
+                    topicArn: "${SNS_TOPIC_ARN}",
+                    service_name: "${env.SERVICE_NAME}"
+                )
+            }
+        }
+    }
+}
