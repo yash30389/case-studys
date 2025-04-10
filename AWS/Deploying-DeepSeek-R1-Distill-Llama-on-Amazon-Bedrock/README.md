@@ -1,10 +1,17 @@
 # Case Study: Deploying DeepSeek R1 Distill Llama on Amazon Bedrock
 
-<div style="width: 100%; display: flex; justify-content: center; gap: 40px; align-items: center; text-align: center;">
-  <img src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/bedrock-color.png" alt="ECR" width="200"/>
-  <img src="https://www.svgrepo.com/show/2087/plus.svg" alt="PLUS" width="30"/>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/DeepSeek_logo.svg/512px-DeepSeek_logo.svg.png" alt="S3" width="300"/>
-</div>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/bedrock-color.png" alt="ECR" width="200"/>
+    </td>
+    <td align="center" style="font-size: 40px;">+</td>
+    <td align="center">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/DeepSeek_logo.svg/512px-DeepSeek_logo.svg.png" alt="S3" width="300"/>
+    </td>
+  </tr>
+</table>
+
 
 ## Overview
 
