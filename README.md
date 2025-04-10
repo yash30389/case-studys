@@ -1,5 +1,6 @@
 # **Description:**  
 
+This repository serves as a curated collection of **DevOps tools, practices, and implementations** across diverse technologies. It is designed to showcase how different cloud-native, infrastructure-as-code (IaC), and automation tools integrate into real-world DevOps workflows.  
 
 <table align="center">
   <tr>
@@ -8,9 +9,6 @@
     </td>
   </tr>
 </table>
-
-This repository serves as a curated collection of **DevOps tools, practices, and implementations** across diverse technologies. It is designed to showcase how different cloud-native, infrastructure-as-code (IaC), and automation tools integrate into real-world DevOps workflows.  
-
 
 ## **Explore DevOps Technologies Here:**  
 - **AWS**
