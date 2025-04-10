@@ -2,6 +2,7 @@
 <div style="text-align: center;">
   <img src="https://landscape.cncf.io/logos/c43855293d114dcad77461e7e5af20cf26023e365619f5d4abb54942b51ffc8a.svg" alt="Crossplane Logo" width="200"/>
 </div>
+
 #### **Client Overview**
 A mid-sized cloud-native SaaS company, **CloudStream Inc.**, provides high-performance streaming services for global clients. With a rapidly growing customer base and the need to scale efficiently, CloudStream adopted Kubernetes for container orchestration across multiple cloud providers (AWS, GCP, and Azure). They also aim to leverage a Kubernetes-native infrastructure management tool to streamline their DevOps workflows and improve operational efficiency.
 
