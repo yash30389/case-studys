@@ -1,6 +1,15 @@
+### **Case Study: Shared Library for Continuous Deployment in a Microservices Architecture**
+
 A **Jenkins Shared Library** is a powerful tool that allows you to centralize common Jenkins pipeline code and reuse it across multiple Jenkinsfiles. This avoids code duplication and makes the management of Jenkins pipelines more efficient and maintainable. Here's a case study and use case to demonstrate how Jenkins Shared Libraries are typically used.
 
-### **Case Study: Shared Library for Continuous Deployment in a Microservices Architecture**
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://miro.medium.com/v2/resize:fit:1116/1*5A8OrocBg3OhG4XHYoF3tQ.jpeg" alt="jenkins" width="300"/>
+    </td>
+  </tr>
+</table>
 
 #### **Overview:**
 Company XYZ has a microservices-based architecture with multiple teams responsible for different services. Each microservice is managed by a separate Git repository and follows the same CI/CD pipeline steps (e.g., building, testing, and deploying the application). 

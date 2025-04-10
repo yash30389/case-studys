@@ -1,8 +1,12 @@
 ### Case Study: Terraform State Locking with Amazon S3 - A New Approach
 
-<div style="text-align: center;">
-  <img src="https://www.svgrepo.com/show/376353/terraform.svg" alt="Terraform" width="200"/>
-</div>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://www.svgrepo.com/show/376353/terraform.svg" alt="Terraform" width="200"/>
+    </td>
+  </tr>
+</table>
 
 #### **Introduction**
 
