@@ -26,14 +26,6 @@ It automates:
 - Monitoring GPUs via **DCGM Exporter** to Prometheus
 - Health checking and reporting
 
-<table align="right">
-  <tr>
-    <td align="center">
-      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="200"/>
-    </td>
-  </tr>
-</table>
-
 ## Key Features of NVIDIA GPU Operator
 
 - 🔥 **Automated Driver Installation**  
@@ -43,6 +35,14 @@ It automates:
 - 📊 **GPU Monitoring and Alerts**
 - 🛡️ **Secure Workload Isolation** (with MIG – Multi-Instance GPU)
 - 🔗 **Dynamic GPU Resource Management**
+
+<table align="right">
+  <tr>
+    <td align="center">
+      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="200"/>
+    </td>
+  </tr>
+</table>
 
 ---
 
