@@ -19,6 +19,14 @@ Both are essential if you want **AI/ML**, **Deep Learning**, **High-Performance 
 
 ## What is NVIDIA GPU Operator?
 
+<table align="right">
+  <tr>
+    <td align="center">
+      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="200"/>
+    </td>
+  </tr>
+</table>
+
 It automates:
 - Installing **NVIDIA drivers**
 - Setting up **Kubernetes Device Plugin** for GPU discovery
@@ -36,13 +44,6 @@ It automates:
 - 🛡️ **Secure Workload Isolation** (with MIG – Multi-Instance GPU)
 - 🔗 **Dynamic GPU Resource Management**
 
-<table align="right">
-  <tr>
-    <td align="center">
-      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="200"/>
-    </td>
-  </tr>
-</table>
 
 ---
 
