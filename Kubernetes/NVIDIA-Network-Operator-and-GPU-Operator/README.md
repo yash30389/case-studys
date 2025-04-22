@@ -22,7 +22,7 @@ Both are essential if you want **AI/ML**, **Deep Learning**, **High-Performance 
 <table align="right">
   <tr>
     <td align="center">
-      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="200"/>
+      <img src="https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/_images/nvidia-gpu-operator-image.jpg" alt="nvida GPU operator" width="400"/>
     </td>
   </tr>
 </table>
