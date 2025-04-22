@@ -344,3 +344,157 @@ A healthcare company wants to run **AI diagnostics** at global data centers.
     <img src="https://d2908q01vomqb2.cloudfront.net/fe2ef495a1152561572949784c16bf23abb28057/2023/09/12/GPU-Concurrency.png" alt="vGPU" style="width: 100%; height: auto; border-radius: 5px;">
   </div>
 </div>
+
+
+# 🧠 GPU Sharing Strategies in Kubernetes (NVIDIA Operators)
+
+---
+
+## 1. **Multi-Process Service (MPS)**
+
+### What it is:  
+MPS allows **multiple CUDA applications** to **run concurrently** on the **same GPU** by sharing GPU resources at the thread/process level.  
+Instead of having one big application fully occupying a GPU, small apps can share it efficiently.
+
+### Example:
+A small startup has a Kubernetes cluster with **4 NVIDIA A100 GPUs**.  
+They deploy 8 microservices doing real-time image processing, but **each only uses 25% GPU**.  
+
+Without MPS → 1 microservice wastes almost an entire GPU.  
+With MPS → multiple microservices can run simultaneously on the same GPU!
+
+### Implementation:
+**Steps to enable MPS with GPU Operator:**
+1. Ensure you have installed the **NVIDIA GPU Operator** (latest version supports MPS automatically).
+2. Modify the **ClusterPolicy** resource:
+    - Enable `mps` in device plugin settings:
+    ```yaml
+    spec:
+      devicePlugin:
+        config:
+          mps:
+            enabled: true
+    ```
+3. Deploy your pods normally. MPS will allow multiple pods to share the same GPU at the CUDA stream level.
+
+4. (Optional) Fine-tune `CUDA_MPS_ACTIVE_THREAD_PERCENTAGE` environment variable inside the container to control how much GPU each app can use.
+
+### Cost Optimization:
+✅ Avoids reserving **one full GPU** for tiny apps.  
+✅ Boosts GPU usage to **80-90%** instead of ~10-20%.  
+✅ Reduces **hardware needs** → fewer GPUs = less upfront and operational cost.
+
+---
+
+## 2. **Time Slicing**
+
+### What it is:  
+Time slicing splits the **GPU into virtual time slots** — each application gets a “slice” of time to access the full GPU resources.
+
+Good when **latency is acceptable**, and you want **strong isolation** between apps.
+
+### Example:
+In a healthcare company, multiple AI models (cancer detection, anomaly scanning, image enhancement) need GPU compute but **don't need it continuously**.
+
+Rather than buying **30 GPUs** for 30 models → you time-slice **10 GPUs** across all models.
+
+### Implementation:
+**How time slicing happens:**
+- **Device Plugin Settings:** Configure the `timeSlicing` mode in NVIDIA's Kubernetes Device Plugin.
+- Enable via **ClusterPolicy** or pod annotations:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    nvidia.com/mig.strategy: mixed
+    nvidia.com/gpu.deploy.time-slicing: "true"
+spec:
+  containers:
+  ...
+```
+- The operator will manage internal GPU context switching.
+
+
+### Cost Optimization:
+✅ One GPU can serve **many users**, **lowering capex** dramatically.  
+✅ Prevents idling — only apps that *need* GPU get temporary access.
+
+---
+
+## 3. **Multi-Instance GPU (MIG)**
+
+### What it is:  
+MIG (only supported on A100, H100, A30, A40 GPUs) **physically partitions** one GPU into **multiple hardware-backed instances**.  
+Each instance behaves like a smaller, isolated GPU!
+
+Perfect for **workload isolation + guaranteed performance**.
+
+### Example:
+A SaaS platform runs customer-specific AI inference models.  
+Instead of dedicating an entire A100 GPU for each customer, the company uses **MIG to carve out 7 separate GPU slices**, each assigned to different customer apps.
+
+### Implementation:
+**Steps to enable MIG in Kubernetes with GPU Operator:**
+1. In **ClusterPolicy**, set MIG enabled:
+```yaml
+spec:
+  mig:
+    strategy: single
+```
+2. The operator automatically partitions the GPU.
+3. Pods can request specific MIG devices using Kubernetes extended resources:
+```yaml
+resources:
+  limits:
+    nvidia.com/mig-1g.5gb: 1
+```
+(meaning 1 slice with 5 GB GPU memory)
+
+### Cost Optimization:
+✅ Maximize hardware investment — run **7 apps on one A100** instead of buying 7 separate GPUs!  
+✅ Strong performance isolation — customers can't interfere with each other.
+
+---
+
+## 4. **Virtualization with vGPU (NVIDIA vGPU)**
+
+### What it is:  
+**NVIDIA vGPU** lets you **virtualize** a GPU like you virtualize a CPU with VMware or KVM.  
+Different VMs or containers can share GPU slices with **driver-level isolation**.
+
+**Great for very large enterprises** needing VDI (Virtual Desktop Infrastructure), or AI workloads with strict multi-tenancy needs.
+
+### Example:
+A global healthcare company deploys a Kubernetes cluster across 3 data centers.  
+Each team (radiology, oncology, research) gets their own **vGPU-backed VMs** inside the same physical server to run AI models safely and independently.
+
+### Implementation:
+**Steps for vGPU setup:**
+1. Use GPUs that support **vGPU licensing** (A100, A40, RTX 6000 Ada, etc.)
+2. Install **NVIDIA vGPU software** and configure licensing.
+3. In Kubernetes:
+   - Use the **NVIDIA GPU Operator with vGPU driver mode**.
+   - Set up scheduling for vGPU types (example below):
+```yaml
+resources:
+  limits:
+    nvidia.com/vgpu-devices: 1
+```
+4. Kubernetes + KubeVirt or VMware Tanzu manages GPU-backed VM deployments.
+
+### Cost Optimization:
+✅ **Dynamic sharing:** multiple VMs run on one GPU without physical overprovisioning.  
+✅ **Compliance and tenant separation** for regulated industries (finance, healthcare).  
+✅ **Scale up/down on demand** without buying dedicated GPU per team.
+
+---
+
+# 🚀 In Summary (Quick Table):
+
+| Strategy | Best Use Case | Example | Cost Savings |
+|:---|:---|:---|:---|
+| MPS | Many small CUDA jobs | Multiple AI microservices | 4x GPU efficiency |
+| Time Slicing | Non-real-time apps | AI model batch processing | Avoid idle GPUs |
+| MIG | Strong isolation + steady workloads | Multi-tenant SaaS inference | Hardware ROI 7x |
+| vGPU | Multi-tenant / VDI | Healthcare team separation | Dynamic GPU allocation |
